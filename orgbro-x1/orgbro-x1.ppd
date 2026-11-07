@@ -30,52 +30,88 @@
 
 *OpenUI *PageSize/Label: PickOne
 *OrderDependency: 10 AnySetup *PageSize
-*DefaultPageSize: w34h85
-*PageSize w34h57/12x20 mm: "<</PageSize[34.02 56.69]/ImagingBBox null>>setpagedevice"
-*PageSize w34h85/12x30 mm: "<</PageSize[34.02 85.04]/ImagingBBox null>>setpagedevice"
-*PageSize w34h113/12x40 mm: "<</PageSize[34.02 113.39]/ImagingBBox null>>setpagedevice"
-*PageSize w34h142/12x50 mm: "<</PageSize[34.02 141.73]/ImagingBBox null>>setpagedevice"
-*PageSize w34h170/12x60 mm: "<</PageSize[34.02 170.08]/ImagingBBox null>>setpagedevice"
-*PageSize w34h227/12x80 mm: "<</PageSize[34.02 226.77]/ImagingBBox null>>setpagedevice"
-*PageSize w34h283/12x100 mm: "<</PageSize[34.02 283.46]/ImagingBBox null>>setpagedevice"
+*DefaultPageSize: w12h30
+*PageSize w12h20/12x20 mm: "<</PageSize[34.02 56.69]/ImagingBBox null>>setpagedevice"
+*PageSize w12h30/12x30 mm: "<</PageSize[34.02 85.04]/ImagingBBox null>>setpagedevice"
+*PageSize w12h37/12x37 mm: "<</PageSize[34.02 104.88]/ImagingBBox null>>setpagedevice"
+*PageSize w12h40/12x40 mm: "<</PageSize[34.02 113.39]/ImagingBBox null>>setpagedevice"
+*PageSize w12h50/12x50 mm: "<</PageSize[34.02 141.73]/ImagingBBox null>>setpagedevice"
+*PageSize w12h60/12x60 mm: "<</PageSize[34.02 170.08]/ImagingBBox null>>setpagedevice"
+*PageSize w12h80/12x80 mm: "<</PageSize[34.02 226.77]/ImagingBBox null>>setpagedevice"
+*PageSize w12h100/12x100 mm: "<</PageSize[34.02 283.46]/ImagingBBox null>>setpagedevice"
+*PageSize w20h12/20x12 mm: "<</PageSize[56.69 34.02]/ImagingBBox null>>setpagedevice"
+*PageSize w30h12/30x12 mm: "<</PageSize[85.04 34.02]/ImagingBBox null>>setpagedevice"
+*PageSize w37h12/37x12 mm: "<</PageSize[104.88 34.02]/ImagingBBox null>>setpagedevice"
+*PageSize w40h12/40x12 mm: "<</PageSize[113.39 34.02]/ImagingBBox null>>setpagedevice"
+*PageSize w50h12/50x12 mm: "<</PageSize[141.73 34.02]/ImagingBBox null>>setpagedevice"
+*PageSize w60h12/60x12 mm: "<</PageSize[170.08 34.02]/ImagingBBox null>>setpagedevice"
+*PageSize w80h12/80x12 mm: "<</PageSize[226.77 34.02]/ImagingBBox null>>setpagedevice"
+*PageSize w100h12/100x12 mm: "<</PageSize[283.46 34.02]/ImagingBBox null>>setpagedevice"
 *CloseUI: *PageSize
 
 *OpenUI *PageRegion: PickOne
 *OrderDependency: 10 AnySetup *PageRegion
-*DefaultPageRegion: w34h85
-*PageRegion w34h57/12x20 mm: "<</PageSize[34.02 56.69]/ImagingBBox null>>setpagedevice"
-*PageRegion w34h85/12x30 mm: "<</PageSize[34.02 85.04]/ImagingBBox null>>setpagedevice"
-*PageRegion w34h113/12x40 mm: "<</PageSize[34.02 113.39]/ImagingBBox null>>setpagedevice"
-*PageRegion w34h142/12x50 mm: "<</PageSize[34.02 141.73]/ImagingBBox null>>setpagedevice"
-*PageRegion w34h170/12x60 mm: "<</PageSize[34.02 170.08]/ImagingBBox null>>setpagedevice"
-*PageRegion w34h227/12x80 mm: "<</PageSize[34.02 226.77]/ImagingBBox null>>setpagedevice"
-*PageRegion w34h283/12x100 mm: "<</PageSize[34.02 283.46]/ImagingBBox null>>setpagedevice"
+*DefaultPageRegion: w12h30
+*PageRegion w12h20/12x20 mm: "<</PageSize[34.02 56.69]/ImagingBBox null>>setpagedevice"
+*PageRegion w12h30/12x30 mm: "<</PageSize[34.02 85.04]/ImagingBBox null>>setpagedevice"
+*PageRegion w12h37/12x37 mm: "<</PageSize[34.02 104.88]/ImagingBBox null>>setpagedevice"
+*PageRegion w12h40/12x40 mm: "<</PageSize[34.02 113.39]/ImagingBBox null>>setpagedevice"
+*PageRegion w12h50/12x50 mm: "<</PageSize[34.02 141.73]/ImagingBBox null>>setpagedevice"
+*PageRegion w12h60/12x60 mm: "<</PageSize[34.02 170.08]/ImagingBBox null>>setpagedevice"
+*PageRegion w12h80/12x80 mm: "<</PageSize[34.02 226.77]/ImagingBBox null>>setpagedevice"
+*PageRegion w12h100/12x100 mm: "<</PageSize[34.02 283.46]/ImagingBBox null>>setpagedevice"
+*PageRegion w20h12/20x12 mm: "<</PageSize[56.69 34.02]/ImagingBBox null>>setpagedevice"
+*PageRegion w30h12/30x12 mm: "<</PageSize[85.04 34.02]/ImagingBBox null>>setpagedevice"
+*PageRegion w37h12/37x12 mm: "<</PageSize[104.88 34.02]/ImagingBBox null>>setpagedevice"
+*PageRegion w40h12/40x12 mm: "<</PageSize[113.39 34.02]/ImagingBBox null>>setpagedevice"
+*PageRegion w50h12/50x12 mm: "<</PageSize[141.73 34.02]/ImagingBBox null>>setpagedevice"
+*PageRegion w60h12/60x12 mm: "<</PageSize[170.08 34.02]/ImagingBBox null>>setpagedevice"
+*PageRegion w80h12/80x12 mm: "<</PageSize[226.77 34.02]/ImagingBBox null>>setpagedevice"
+*PageRegion w100h12/100x12 mm: "<</PageSize[283.46 34.02]/ImagingBBox null>>setpagedevice"
 *CloseUI: *PageRegion
 
-*DefaultImageableArea: w34h85
-*DefaultPaperDimension: w34h85
-*ImageableArea w34h57: "0 0 34.02 56.69"
-*PaperDimension w34h57: "34.02 56.69"
-*ImageableArea w34h85: "0 0 34.02 85.04"
-*PaperDimension w34h85: "34.02 85.04"
-*ImageableArea w34h113: "0 0 34.02 113.39"
-*PaperDimension w34h113: "34.02 113.39"
-*ImageableArea w34h142: "0 0 34.02 141.73"
-*PaperDimension w34h142: "34.02 141.73"
-*ImageableArea w34h170: "0 0 34.02 170.08"
-*PaperDimension w34h170: "34.02 170.08"
-*ImageableArea w34h227: "0 0 34.02 226.77"
-*PaperDimension w34h227: "34.02 226.77"
-*ImageableArea w34h283: "0 0 34.02 283.46"
-*PaperDimension w34h283: "34.02 283.46"
+*DefaultImageableArea: w12h30
+*DefaultPaperDimension: w12h30
+*ImageableArea w12h20: "0 0 34.02 56.69"
+*PaperDimension w12h20: "34.02 56.69"
+*ImageableArea w12h30: "0 0 34.02 85.04"
+*PaperDimension w12h30: "34.02 85.04"
+*ImageableArea w12h37: "0 0 34.02 104.88"
+*PaperDimension w12h37: "34.02 104.88"
+*ImageableArea w12h40: "0 0 34.02 113.39"
+*PaperDimension w12h40: "34.02 113.39"
+*ImageableArea w12h50: "0 0 34.02 141.73"
+*PaperDimension w12h50: "34.02 141.73"
+*ImageableArea w12h60: "0 0 34.02 170.08"
+*PaperDimension w12h60: "34.02 170.08"
+*ImageableArea w12h80: "0 0 34.02 226.77"
+*PaperDimension w12h80: "34.02 226.77"
+*ImageableArea w12h100: "0 0 34.02 283.46"
+*PaperDimension w12h100: "34.02 283.46"
+*ImageableArea w20h12: "0 0 56.69 34.02"
+*PaperDimension w20h12: "56.69 34.02"
+*ImageableArea w30h12: "0 0 85.04 34.02"
+*PaperDimension w30h12: "85.04 34.02"
+*ImageableArea w37h12: "0 0 104.88 34.02"
+*PaperDimension w37h12: "104.88 34.02"
+*ImageableArea w40h12: "0 0 113.39 34.02"
+*PaperDimension w40h12: "113.39 34.02"
+*ImageableArea w50h12: "0 0 141.73 34.02"
+*PaperDimension w50h12: "141.73 34.02"
+*ImageableArea w60h12: "0 0 170.08 34.02"
+*PaperDimension w60h12: "170.08 34.02"
+*ImageableArea w80h12: "0 0 226.77 34.02"
+*PaperDimension w80h12: "226.77 34.02"
+*ImageableArea w100h12: "0 0 283.46 34.02"
+*PaperDimension w100h12: "283.46 34.02"
 
 *VariablePaperSize: True
-*MaxMediaWidth: "34.02"
+*MaxMediaWidth: "1417.32"
 *MaxMediaHeight: "1417.32"
 *HWMargins: 0 0 0 0
 *CustomPageSize True: "pop pop pop <</PageSize[5 -2 roll]/ImagingBBox null>>setpagedevice"
-*ParamCustomPageSize Width: 1 points 14.17 34.02
-*ParamCustomPageSize Height: 2 points 28.35 1417.32
+*ParamCustomPageSize Width: 1 points 14.17 1417.32
+*ParamCustomPageSize Height: 2 points 14.17 1417.32
 *ParamCustomPageSize WidthOffset: 3 points 0 0
 *ParamCustomPageSize HeightOffset: 4 points 0 0
 *ParamCustomPageSize Orientation: 5 int 0 0

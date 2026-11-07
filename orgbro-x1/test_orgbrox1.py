@@ -69,6 +69,20 @@ class FilterTest(unittest.TestCase):
         rows = [data for command, _seq, data in frames(FILTER.encode(io.BytesIO(raster(80, 24)), 9)) if command == 0]
         self.assertEqual(rows[0][:12], bytes([0x00, 0x7F]) + b'\xff' * 9 + bytes([0x80]))
 
+    def test_a_label_lying_along_the_tape_is_turned(self):
+        line = (296 + 7) // 8
+        header = bytearray(1796)
+        struct.pack_into('<II', header, 372, 296, 96)
+        struct.pack_into('<IIIII', header, 384, 1, 1, line, 0, 3)
+        top = bytearray(line)
+        for x in range(296):
+            top[x >> 3] |= 0x80 >> (x & 7)
+        data = b'3SaR' + bytes(header) + bytes(line) + bytes(top) + bytes(line) * 94
+        rows = b''.join(d for command, _seq, d in frames(FILTER.encode(io.BytesIO(data), 9)) if command == 0)
+        self.assertEqual(len(rows), 296 * 12)
+        # the second line from the top becomes dot 94 of every row, moved one dot along to the last one
+        self.assertTrue(all(rows[i * 12 + 11] == 0x01 for i in range(296)))
+
     def test_density_option(self):
         self.assertEqual(FILTER.density_from('PageSize=w34h85 X1Density=13'), 13)
         self.assertEqual(FILTER.density_from('X1Density=7'), 9)

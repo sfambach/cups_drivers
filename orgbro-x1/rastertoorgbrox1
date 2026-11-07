@@ -135,9 +135,16 @@ def density_from(options):
     return 9
 
 
+def upright(width, height, rows):
+    """A page wider than the head and no taller than it is a label lying along the tape: turn it a quarter, clockwise."""
+    if width <= DOTS or height > DOTS:
+        return rows
+    return [[rows[height - 1 - y][x] for y in range(height)] for x in range(width)]
+
+
 def encode(stream, density):
     frames = Frames()
-    collected = [[fit_row(row) for row in rows] for _w, _h, rows in pages(stream)]
+    collected = [[fit_row(row) for row in upright(w, h, rows)] for w, h, rows in pages(stream)]
     out = b''
     for index, rows in enumerate(collected):
         out += encode_page(frames, rows, density, index == 0, index == len(collected) - 1)

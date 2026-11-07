@@ -16,7 +16,7 @@ flowchart LR
 |---|---|
 | `rastertoorgbrox1` | CUPS filter: 1-bit raster in, X1 frames out |
 | `orgbrox1` | CUPS backend: `orgbrox1://<address>[/<channel>]`, opens RFCOMM itself |
-| `orgbro-x1.ppd` | sizes 12×20 … 12×100 mm plus custom sizes, darkness 5 / 9 / 13 |
+| `orgbro-x1.ppd` | sizes named by their millimetres, `w12h30` … `w12h100` and lying `w37h12` …, plus custom sizes; darkness 5 / 9 / 13 |
 | `install.sh` | copies the three into CUPS and creates the queue |
 
 ## Protocol
@@ -35,13 +35,16 @@ Read from the vendor's app XeasyLabel, whose SDK calls the X1 «HP2». Every fra
 The printer answers with frames of command `FF` (status). The filter's output for a test picture is
 byte for byte what the app sent, and that job printed.
 
+A page wider than the head (96 dots) and at most 12 mm tall is a label lying along the tape: the filter turns it a
+quarter, clockwise, so `w37h12` prints a 37 mm label with the text reading along the tape.
+
 ## Set up (Linux Mint)
 
 1. Pair the X1 once (Bluetooth settings). Close its serial connection in the desktop afterwards,
    or that connection holds the channel.
 2. `sudo ./install.sh 06:02:AC:C8:AF:65` — the address from `bluetoothctl devices`. Re-run it after
    an update; it overwrites the installed files and keeps the queue.
-3. Test: `lp -d ORGBRO_X1 -o PageSize=w34h85 file.pdf` (12×30 mm). Other sizes:
+3. Test: `lp -d ORGBRO_X1 -o PageSize=w12h30 file.pdf` (12×30 mm). Other sizes:
    `lpoptions -p ORGBRO_X1 -l`.
 4. Taxmod: the printer gets the queue `ORGBRO_X1` in the model; the print service then sends to it
    like to any other queue.
