@@ -1,0 +1,165 @@
+#!/usr/bin/env python3
+"""CUPS filter: CUPS raster in, ORGBRO X1 print frames out.
+
+The frame format is the one the vendor's app sends to the X1 (its SDK calls the model «HP2», the
+continuous-tape variant): 0x64, command, sequence, length (16 bit LE), data, checksum (4 bytes, the
+app sends zero), 0x9B. The head has 96 dots (12 mm at 8 dots/mm); a raster line is one row across the
+tape, so the label length is the number of lines.
+"""
+import struct
+import sys
+
+DOTS = 96
+ROW_BYTES = DOTS // 8
+ROWS_PER_FRAME = 24
+SPEED = 25
+DENSITIES = (5, 9, 13)
+
+CMD_IMAGE = 0x00
+CMD_FEED = 0x02
+CMD_START = 0x04
+CMD_DENSITY = 0x09
+CMD_SPEED = 0x0A
+
+
+class Frames:
+    def __init__(self):
+        self.sequence = 0
+
+    def frame(self, command, data):
+        self.sequence = self.sequence % 255 + 1
+        return (bytes([0x64, command, self.sequence]) + struct.pack('<H', len(data)) + data
+                + b'\0\0\0\0' + b'\x9b')
+
+
+def read_exact(stream, size):
+    data = b''
+    while len(data) < size:
+        chunk = stream.read(size - len(data))
+        if not chunk:
+            raise EOFError
+        data += chunk
+    return data
+
+
+def decode_ras2_line(stream, line_bytes, bytes_per_pixel, blank):
+    line = bytearray()
+    while len(line) < line_bytes:
+        count = read_exact(stream, 1)[0]
+        if count == 0x80:
+            line += bytes([blank]) * (line_bytes - len(line))
+        elif count < 0x80:
+            line += read_exact(stream, bytes_per_pixel) * (count + 1)
+        else:
+            line += read_exact(stream, (257 - count) * bytes_per_pixel)
+    return bytes(line[:line_bytes])
+
+
+def pages(stream):
+    """Yield (width, height, rows) per page; each row is the page line as 1-bit, 1 = black."""
+    sync = read_exact(stream, 4)
+    if sync not in (b'RaS2', b'RaS3', b'2SaR', b'3SaR'):
+        raise ValueError('not a CUPS raster stream')
+    compressed = sync in (b'RaS2', b'2SaR')
+    endian = '<' if sync[0:1] in (b'2', b'3') else '>'
+    while True:
+        try:
+            header = read_exact(stream, 1796)
+        except EOFError:
+            return
+        width, height = struct.unpack(endian + 'II', header[372:380])
+        bits_color, bits_pixel, line_bytes, _order, color_space = struct.unpack(endian + 'IIIII', header[384:404])
+        bytes_per_pixel = max(1, (bits_pixel + 7) // 8)
+        blank = 0xFF if color_space in (0, 1, 18) else 0x00  # white is 1 in W/RGB/sGray
+        rows = []
+        while len(rows) < height:
+            if compressed:
+                repeat = read_exact(stream, 1)[0] + 1
+                line = decode_ras2_line(stream, line_bytes, bytes_per_pixel, blank)
+            else:
+                repeat, line = 1, read_exact(stream, line_bytes)
+            row = to_bits(line, width, bits_pixel, color_space)
+            rows.extend([row] * min(repeat, height - len(rows)))
+        yield width, height, rows
+
+
+def to_bits(line, width, bits_pixel, color_space):
+    black = []
+    white_is_high = color_space in (0, 1, 18)
+    if bits_pixel == 1:
+        for x in range(width):
+            bit = (line[x >> 3] >> (7 - (x & 7))) & 1
+            black.append(bit == 0 if white_is_high else bit == 1)
+    else:
+        step = bits_pixel // 8
+        for x in range(width):
+            value = line[x * step]
+            black.append(value < 128 if white_is_high else value >= 128)
+    return black
+
+
+def fit_row(black):
+    """Centre the page line on the 96 dots, then move it one dot along as the vendor's app does."""
+    if len(black) > DOTS:
+        cut = (len(black) - DOTS) // 2
+        black = black[cut:cut + DOTS]
+    pad = DOTS - len(black)
+    black = [False] * (pad // 2) + black + [False] * (pad - pad // 2)
+    black = [False] + black[:DOTS - 1]
+    out = bytearray(ROW_BYTES)
+    for x, dot in enumerate(black):
+        if dot:
+            out[x >> 3] |= 0x80 >> (x & 7)
+    return bytes(out)
+
+
+def encode_page(frames, rows, density, first, last):
+    out = frames.frame(CMD_SPEED, bytes([SPEED])) + frames.frame(CMD_DENSITY, bytes([density]))
+    if first:
+        out += frames.frame(CMD_START, struct.pack('<H', ROWS_PER_FRAME))
+    for start in range(0, len(rows), ROWS_PER_FRAME):
+        out += frames.frame(CMD_IMAGE, b''.join(rows[start:start + ROWS_PER_FRAME]))
+    out += frames.frame(CMD_FEED, struct.pack('<H', 72))
+    if last:
+        out += frames.frame(CMD_FEED, struct.pack('<H', 24))
+    return out
+
+
+def density_from(options):
+    for option in options.split():
+        key, _, value = option.partition('=')
+        if key == 'X1Density' and value.isdigit() and int(value) in DENSITIES:
+            return int(value)
+    return 9
+
+
+def encode(stream, density):
+    frames = Frames()
+    collected = [[fit_row(row) for row in rows] for _w, _h, rows in pages(stream)]
+    out = b''
+    for index, rows in enumerate(collected):
+        out += encode_page(frames, rows, density, index == 0, index == len(collected) - 1)
+    return out
+
+
+def main(argv):
+    if len(argv) < 6:
+        sys.stderr.write('Usage: rastertoorgbrox1 job user title copies options [file]\n')
+        return 1
+    density = density_from(argv[5])
+    try:
+        if len(argv) > 6:
+            with open(argv[6], 'rb') as stream:
+                data = encode(stream, density)
+        else:
+            data = encode(sys.stdin.buffer, density)
+    except (ValueError, EOFError) as error:
+        sys.stderr.write('ERROR: %s\n' % error)
+        return 1
+    sys.stdout.buffer.write(data)
+    sys.stdout.buffer.flush()
+    return 0
+
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv))

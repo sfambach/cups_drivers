@@ -1,0 +1,98 @@
+#!/usr/bin/env python3
+"""CUPS backend: sends a job to an ORGBRO X1 over Bluetooth (RFCOMM, serial port profile).
+
+URI: orgbrox1://06:02:AC:C8:AF:65 (channel 1), or orgbrox1://06:02:AC:C8:AF:65/3 for another channel.
+The printer must be paired once; the desktop's own serial connection to it must be closed, or it
+holds the channel.
+"""
+import os
+import re
+import socket
+import sys
+import time
+
+CHUNK = 512
+PAUSE = 0.02
+LISTEN = 3.0
+TRIES = 5
+
+# CUPS exit codes.
+OK, FAILED, RETRY = 0, 1, 6
+
+
+def parse(uri):
+    match = re.fullmatch(r'orgbrox1://([0-9A-Fa-f]{2}(?::[0-9A-Fa-f]{2}){5})(?:/(\d+))?/?', uri)
+    if not match:
+        raise ValueError('bad device URI %r' % uri)
+    return match.group(1).upper(), int(match.group(2) or 1)
+
+
+def connect(address, channel):
+    last = None
+    for attempt in range(TRIES):
+        sock = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
+        sock.settimeout(10)
+        try:
+            sock.connect((address, channel))
+            return sock
+        except OSError as error:
+            last = error
+            sock.close()
+            sys.stderr.write('INFO: X1 not reachable (%s), try %d of %d\n' % (error, attempt + 1, TRIES))
+            time.sleep(2 + attempt * 2)
+    raise last
+
+
+def send(sock, data):
+    for start in range(0, len(data), CHUNK):
+        sock.sendall(data[start:start + CHUNK])
+        time.sleep(PAUSE)
+    sock.settimeout(0.5)
+    end = time.time() + LISTEN
+    while time.time() < end:
+        try:
+            reply = sock.recv(256)
+        except socket.timeout:
+            continue
+        if not reply:
+            break
+        sys.stderr.write('DEBUG: X1 replied %s\n' % reply.hex(' '))
+
+
+def main(argv):
+    if len(argv) == 1:
+        print('direct orgbrox1 "ORGBRO" "ORGBRO X1 (Bluetooth)"')
+        return OK
+    if len(argv) not in (6, 7):
+        sys.stderr.write('Usage: orgbrox1 job user title copies options [file]\n')
+        return FAILED
+    try:
+        address, channel = parse(os.environ.get('DEVICE_URI', ''))
+    except ValueError as error:
+        sys.stderr.write('ERROR: %s\n' % error)
+        return FAILED
+    if len(argv) == 7:
+        with open(argv[6], 'rb') as stream:
+            data = stream.read()
+    else:
+        data = sys.stdin.buffer.read()
+    copies = max(1, int(argv[4])) if argv[4].isdigit() else 1
+    if len(argv) == 7:
+        data = data * copies
+    try:
+        sock = connect(address, channel)
+    except OSError as error:
+        sys.stderr.write('ERROR: X1 %s not reachable: %s\n' % (address, error))
+        return RETRY
+    try:
+        send(sock, data)
+    except OSError as error:
+        sys.stderr.write('ERROR: sending to the X1 failed: %s\n' % error)
+        return RETRY
+    finally:
+        sock.close()
+    return OK
+
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv))

@@ -1,0 +1,89 @@
+*PPD-Adobe: "4.3"
+*FormatVersion: "4.3"
+*FileVersion: "1.0"
+*LanguageVersion: English
+*LanguageEncoding: ISOLatin1
+*PCFileName: "ORGBROX1.PPD"
+*Manufacturer: "ORGBRO"
+*Product: "(X1)"
+*ModelName: "ORGBRO X1"
+*ShortNickName: "ORGBRO X1"
+*NickName: "ORGBRO X1, 12 mm on 15 mm tape"
+*PSVersion: "(3010.000) 0"
+*LanguageLevel: "3"
+*ColorDevice: False
+*DefaultColorSpace: Gray
+*FileSystem: False
+*Throughput: "1"
+*LandscapeOrientation: Plus90
+*TTRasterizer: Type42
+*cupsVersion: 2.4
+*cupsModelNumber: 1
+*cupsManualCopies: True
+*cupsFilter: "application/vnd.cups-raster 0 rastertoorgbrox1"
+
+*OpenUI *Resolution/Resolution: PickOne
+*OrderDependency: 10 AnySetup *Resolution
+*DefaultResolution: 203dpi
+*Resolution 203dpi/203 dpi: "<</HWResolution[203 203]/cupsBitsPerColor 1/cupsColorSpace 3/cupsColorOrder 0>>setpagedevice"
+*CloseUI: *Resolution
+
+*OpenUI *PageSize/Label: PickOne
+*OrderDependency: 10 AnySetup *PageSize
+*DefaultPageSize: w34h85
+*PageSize w34h57/12x20 mm: "<</PageSize[34.02 56.69]/ImagingBBox null>>setpagedevice"
+*PageSize w34h85/12x30 mm: "<</PageSize[34.02 85.04]/ImagingBBox null>>setpagedevice"
+*PageSize w34h113/12x40 mm: "<</PageSize[34.02 113.39]/ImagingBBox null>>setpagedevice"
+*PageSize w34h142/12x50 mm: "<</PageSize[34.02 141.73]/ImagingBBox null>>setpagedevice"
+*PageSize w34h170/12x60 mm: "<</PageSize[34.02 170.08]/ImagingBBox null>>setpagedevice"
+*PageSize w34h227/12x80 mm: "<</PageSize[34.02 226.77]/ImagingBBox null>>setpagedevice"
+*PageSize w34h283/12x100 mm: "<</PageSize[34.02 283.46]/ImagingBBox null>>setpagedevice"
+*CloseUI: *PageSize
+
+*OpenUI *PageRegion: PickOne
+*OrderDependency: 10 AnySetup *PageRegion
+*DefaultPageRegion: w34h85
+*PageRegion w34h57/12x20 mm: "<</PageSize[34.02 56.69]/ImagingBBox null>>setpagedevice"
+*PageRegion w34h85/12x30 mm: "<</PageSize[34.02 85.04]/ImagingBBox null>>setpagedevice"
+*PageRegion w34h113/12x40 mm: "<</PageSize[34.02 113.39]/ImagingBBox null>>setpagedevice"
+*PageRegion w34h142/12x50 mm: "<</PageSize[34.02 141.73]/ImagingBBox null>>setpagedevice"
+*PageRegion w34h170/12x60 mm: "<</PageSize[34.02 170.08]/ImagingBBox null>>setpagedevice"
+*PageRegion w34h227/12x80 mm: "<</PageSize[34.02 226.77]/ImagingBBox null>>setpagedevice"
+*PageRegion w34h283/12x100 mm: "<</PageSize[34.02 283.46]/ImagingBBox null>>setpagedevice"
+*CloseUI: *PageRegion
+
+*DefaultImageableArea: w34h85
+*DefaultPaperDimension: w34h85
+*ImageableArea w34h57: "0 0 34.02 56.69"
+*PaperDimension w34h57: "34.02 56.69"
+*ImageableArea w34h85: "0 0 34.02 85.04"
+*PaperDimension w34h85: "34.02 85.04"
+*ImageableArea w34h113: "0 0 34.02 113.39"
+*PaperDimension w34h113: "34.02 113.39"
+*ImageableArea w34h142: "0 0 34.02 141.73"
+*PaperDimension w34h142: "34.02 141.73"
+*ImageableArea w34h170: "0 0 34.02 170.08"
+*PaperDimension w34h170: "34.02 170.08"
+*ImageableArea w34h227: "0 0 34.02 226.77"
+*PaperDimension w34h227: "34.02 226.77"
+*ImageableArea w34h283: "0 0 34.02 283.46"
+*PaperDimension w34h283: "34.02 283.46"
+
+*VariablePaperSize: True
+*MaxMediaWidth: "34.02"
+*MaxMediaHeight: "1417.32"
+*HWMargins: 0 0 0 0
+*CustomPageSize True: "pop pop pop <</PageSize[5 -2 roll]/ImagingBBox null>>setpagedevice"
+*ParamCustomPageSize Width: 1 points 14.17 34.02
+*ParamCustomPageSize Height: 2 points 28.35 1417.32
+*ParamCustomPageSize WidthOffset: 3 points 0 0
+*ParamCustomPageSize HeightOffset: 4 points 0 0
+*ParamCustomPageSize Orientation: 5 int 0 0
+
+*OpenUI *X1Density/Darkness: PickOne
+*OrderDependency: 20 AnySetup *X1Density
+*DefaultX1Density: 9
+*X1Density 5/Light: ""
+*X1Density 9/Normal: ""
+*X1Density 13/Dark: ""
+*CloseUI: *X1Density
