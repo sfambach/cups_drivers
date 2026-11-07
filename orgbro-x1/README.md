@@ -15,7 +15,7 @@ flowchart LR
 | File | What it is |
 |---|---|
 | `rastertoorgbrox1` | CUPS filter: 1-bit raster in, X1 frames out |
-| `orgbrox1` | CUPS backend: `orgbrox1://<address>[/<channel>]`, opens RFCOMM itself |
+| `orgbrox1` | CUPS backend: `orgbrox1://<address without colons>[/<channel>]`, e.g. `orgbrox1://0602ACC8AF65`, opens RFCOMM itself |
 | `orgbro-x1.ppd` | sizes named by their millimetres, `w12h30` … `w12h100` and lying `w37h12` …, plus custom sizes; darkness 5 / 9 / 13 |
 | `install.sh` | copies the three into CUPS and creates the queue |
 

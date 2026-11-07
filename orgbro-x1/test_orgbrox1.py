@@ -90,6 +90,7 @@ class FilterTest(unittest.TestCase):
     def test_backend_uri(self):
         self.assertEqual(BACKEND.parse('orgbrox1://06:02:ac:c8:af:65'), ('06:02:AC:C8:AF:65', 1))
         self.assertEqual(BACKEND.parse('orgbrox1://06:02:AC:C8:AF:65/3'), ('06:02:AC:C8:AF:65', 3))
+        self.assertEqual(BACKEND.parse('orgbrox1://0602acc8af65'), ('06:02:AC:C8:AF:65', 1))
         with self.assertRaises(ValueError):
             BACKEND.parse('serial:/dev/rfcomm0')
 

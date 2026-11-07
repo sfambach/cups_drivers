@@ -3,7 +3,8 @@
 # PolyForm Noncommercial 1.0.0, see LICENSE.md; commercial use only with his consent.
 """CUPS backend: sends a job to an ORGBRO X1 over Bluetooth (RFCOMM, serial port profile).
 
-URI: orgbrox1://06:02:AC:C8:AF:65 (channel 1), or orgbrox1://06:02:AC:C8:AF:65/3 for another channel.
+URI: orgbrox1://0602ACC8AF65 (channel 1), or orgbrox1://0602ACC8AF65/3 for another channel — the address without
+colons, since CUPS reads a colon in the host as the start of a port.
 The printer must be paired once; the desktop's own serial connection to it must be closed, or it
 holds the channel.
 """
@@ -23,10 +24,11 @@ OK, FAILED, RETRY = 0, 1, 6
 
 
 def parse(uri):
-    match = re.fullmatch(r'orgbrox1://([0-9A-Fa-f]{2}(?::[0-9A-Fa-f]{2}){5})(?:/(\d+))?/?', uri)
+    match = re.fullmatch(r'orgbrox1://([0-9A-Fa-f]{12}|[0-9A-Fa-f]{2}(?:[:-][0-9A-Fa-f]{2}){5})(?:/(\d+))?/?', uri)
     if not match:
         raise ValueError('bad device URI %r' % uri)
-    return match.group(1).upper(), int(match.group(2) or 1)
+    plain = re.sub(r'[:-]', '', match.group(1)).upper()
+    return ':'.join(plain[i:i + 2] for i in range(0, 12, 2)), int(match.group(2) or 1)
 
 
 def connect(address, channel):
