@@ -47,10 +47,24 @@ def connect(address, channel):
     raise last
 
 
+class SendError(OSError):
+    """Sending broke off; `sent` says how many bytes had already gone to the printer."""
+
+    def __init__(self, error, sent):
+        super().__init__(str(error))
+        self.sent = sent
+
+
 def send(sock, data):
-    for start in range(0, len(data), CHUNK):
-        sock.sendall(data[start:start + CHUNK])
-        time.sleep(PAUSE)
+    sent = 0
+    try:
+        for start in range(0, len(data), CHUNK):
+            sock.sendall(data[start:start + CHUNK])
+            sent = min(len(data), start + CHUNK)
+            time.sleep(PAUSE)
+    except OSError as error:
+        raise SendError(error, sent) from error
+    # Everything is out; the printer's replies are only logged, and a reset while listening changes nothing.
     sock.settimeout(0.5)
     end = time.time() + LISTEN
     while time.time() < end:
@@ -58,6 +72,9 @@ def send(sock, data):
             reply = sock.recv(256)
         except socket.timeout:
             continue
+        except OSError as error:
+            sys.stderr.write('DEBUG: X1 closed after the job: %s\n' % error)
+            break
         if not reply:
             break
         sys.stderr.write('DEBUG: X1 replied %s\n' % reply.hex(' '))
@@ -90,9 +107,13 @@ def main(argv):
         return RETRY
     try:
         send(sock, data)
-    except OSError as error:
-        sys.stderr.write('ERROR: sending to the X1 failed: %s\n' % error)
-        return RETRY
+    except SendError as error:
+        # A retry sends the whole job again: only safe while nothing has reached the printer, or labels come out twice.
+        if error.sent == 0:
+            sys.stderr.write('ERROR: sending to the X1 failed before any data: %s\n' % error)
+            return RETRY
+        sys.stderr.write('ERROR: sending to the X1 broke off after %d of %d bytes: %s; not sent again, print the job again if a label is missing\n' % (error.sent, len(data), error))
+        return FAILED
     finally:
         sock.close()
     return OK

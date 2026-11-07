@@ -101,5 +101,51 @@ class FilterTest(unittest.TestCase):
             BACKEND.parse('serial:/dev/rfcomm0')
 
 
+class FakeSocket:
+    def __init__(self, fail_after=None, fail_on_recv=False):
+        self.fail_after, self.fail_on_recv, self.calls = fail_after, fail_on_recv, 0
+
+    def sendall(self, chunk):
+        if self.fail_after is not None and self.calls >= self.fail_after:
+            raise ConnectionResetError(104, 'Connection reset by peer')
+        self.calls += 1
+
+    def settimeout(self, seconds):
+        pass
+
+    def recv(self, size):
+        if self.fail_on_recv:
+            raise ConnectionResetError(104, 'Connection reset by peer')
+        return b''
+
+    def close(self):
+        pass
+
+
+class BackendRetryTest(unittest.TestCase):
+    """A job that reached the printer is never sent again: CUPS retries a whole job, so a retry after data printed twice."""
+
+    def run_backend(self, sock):
+        BACKEND.connect = lambda address, channel: sock
+        BACKEND.PAUSE, BACKEND.LISTEN = 0, 0.01
+        os.environ['DEVICE_URI'] = 'orgbrox1://0602ACC8AF65'
+        stdin = io.BytesIO(b'x' * (BACKEND.CHUNK * 3))
+        real = BACKEND.sys.stdin
+        BACKEND.sys.stdin = type('In', (), {'buffer': stdin})()
+        try:
+            return BACKEND.main(['orgbrox1', '1', 'u', 't', '1', ''])
+        finally:
+            BACKEND.sys.stdin = real
+
+    def test_reset_before_any_data_is_retried(self):
+        self.assertEqual(self.run_backend(FakeSocket(fail_after=0)), BACKEND.RETRY)
+
+    def test_reset_after_data_is_not_retried(self):
+        self.assertEqual(self.run_backend(FakeSocket(fail_after=2)), BACKEND.FAILED)
+
+    def test_reset_while_listening_is_done(self):
+        self.assertEqual(self.run_backend(FakeSocket(fail_on_recv=True)), BACKEND.OK)
+
+
 if __name__ == '__main__':
     unittest.main()
