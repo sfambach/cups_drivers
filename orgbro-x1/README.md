@@ -2,7 +2,7 @@
 
 The ORGBRO X1 is a small Bluetooth label printer for 15 mm continuous tape (head 12 mm, 96 dots,
 203 dpi). There is no driver for Linux; this one makes it an ordinary CUPS queue
-([D-1216](../../docs/NewConcept/90-decision-log.md)). Python 3, standard library only.
+(built for the label printing of [wp-taxonomy-modeler](https://github.com/sfambach/wp-taxonomy-modeler)). Python 3, standard library only.
 
 ```mermaid
 flowchart LR
@@ -39,12 +39,15 @@ byte for byte what the app sent, and that job printed.
 
 1. Pair the X1 once (Bluetooth settings). Close its serial connection in the desktop afterwards,
    or that connection holds the channel.
-2. `sudo ./install.sh 06:02:AC:C8:AF:65` — the address from `bluetoothctl devices`.
+2. `sudo ./install.sh 06:02:AC:C8:AF:65` — the address from `bluetoothctl devices`. Re-run it after
+   an update; it overwrites the installed files and keeps the queue.
 3. Test: `lp -d ORGBRO_X1 -o PageSize=w34h85 file.pdf` (12×30 mm). Other sizes:
    `lpoptions -p ORGBRO_X1 -l`.
-4. In the model, the printer gets the queue `ORGBRO_X1`; the print service then sends to it like to
-   any other queue.
+4. Taxmod: the printer gets the queue `ORGBRO_X1` in the model; the print service then sends to it
+   like to any other queue.
 
 ## Test
 
-`python3 -m unittest discover tools/cups-orgbro-x1`
+`python3 -m unittest discover orgbro-x1`
+
+Trademarks: ORGBRO is a trademark of its owner; this driver is not affiliated with the maker.

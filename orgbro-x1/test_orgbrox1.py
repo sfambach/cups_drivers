@@ -1,3 +1,5 @@
+# Copyright (C) 2026 Stefan Fambach (SteFam), https://www.fambach.net
+# PolyForm Noncommercial 1.0.0, see LICENSE.md; commercial use only with his consent.
 """Guards the X1 filter: its output for a known raster must stay byte for byte what the vendor's app sends."""
 import hashlib
 import importlib.machinery

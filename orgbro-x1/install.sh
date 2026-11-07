@@ -1,4 +1,6 @@
 #!/bin/sh
+# Copyright (C) 2026 Stefan Fambach (SteFam), https://www.fambach.net
+# PolyForm Noncommercial 1.0.0, see LICENSE.md; commercial use only with his consent.
 # Installs the ORGBRO X1 driver into CUPS and creates the queue. Run with sudo.
 #   sudo ./install.sh 06:02:AC:C8:AF:65 [queue]
 set -eu

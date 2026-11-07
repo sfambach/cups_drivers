@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright (C) 2026 Stefan Fambach (SteFam), https://www.fambach.net
+# PolyForm Noncommercial 1.0.0, see LICENSE.md; commercial use only with his consent.
 """CUPS filter: CUPS raster in, ORGBRO X1 print frames out.
 
 The frame format is the one the vendor's app sends to the X1 (its SDK calls the model «HP2», the
