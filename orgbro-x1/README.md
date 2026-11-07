@@ -54,3 +54,9 @@ quarter, clockwise, so `w37h12` prints a 37 mm label with the text reading along
 `python3 -m unittest discover orgbro-x1`
 
 Trademarks: ORGBRO is a trademark of its owner; this driver is not affiliated with the maker.
+
+## Retries
+
+CUPS resends a whole job when a backend asks for a retry. The backend therefore retries only when the X1 could not be
+reached or the connection broke before any data went out. If it breaks off after data reached the printer, the job
+fails instead (a label may be missing, print it again); a reset while listening for the printer's replies counts as done.
