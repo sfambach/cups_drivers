@@ -123,3 +123,13 @@
 *X1Density 9/Normal: ""
 *X1Density 13/Dark: ""
 *CloseUI: *X1Density
+
+*OpenUI *X1EndFeed/Feed after the last label: PickOne
+*OrderDependency: 20 AnySetup *X1EndFeed
+*DefaultX1EndFeed: 12
+*X1EndFeed 4/4 mm: ""
+*X1EndFeed 6/6 mm: ""
+*X1EndFeed 8/8 mm: ""
+*X1EndFeed 10/10 mm: ""
+*X1EndFeed 12/12 mm (as the app): ""
+*CloseUI: *X1EndFeed

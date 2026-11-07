@@ -115,16 +115,30 @@ def fit_row(black):
     return bytes(out)
 
 
-def encode_page(frames, rows, density, first, last):
+def encode_page(frames, rows, density, first, last, end_feed=12):
     out = frames.frame(CMD_SPEED, bytes([SPEED])) + frames.frame(CMD_DENSITY, bytes([density]))
     if first:
         out += frames.frame(CMD_START, struct.pack('<H', ROWS_PER_FRAME))
     for start in range(0, len(rows), ROWS_PER_FRAME):
         out += frames.frame(CMD_IMAGE, b''.join(rows[start:start + ROWS_PER_FRAME]))
-    out += frames.frame(CMD_FEED, struct.pack('<H', 72))
-    if last:
-        out += frames.frame(CMD_FEED, struct.pack('<H', 24))
-    return out
+    if not last:
+        return out + frames.frame(CMD_FEED, struct.pack('<H', 72))
+    if end_feed == 12:
+        # what the vendor's app sends: 72 dots, then 24 more
+        return out + frames.frame(CMD_FEED, struct.pack('<H', 72)) + frames.frame(CMD_FEED, struct.pack('<H', 24))
+    return out + frames.frame(CMD_FEED, struct.pack('<H', end_feed * 8))
+
+
+END_FEEDS = (4, 6, 8, 10, 12)
+
+
+def end_feed_from(options):
+    """Millimetres of tape fed after the last label, so it can be torn off; the vendor's app feeds 12."""
+    for option in options.split():
+        key, _, value = option.partition('=')
+        if key == 'X1EndFeed' and value.isdigit() and int(value) in END_FEEDS:
+            return int(value)
+    return 12
 
 
 def density_from(options):
@@ -142,12 +156,12 @@ def upright(width, height, rows):
     return [[rows[height - 1 - y][x] for y in range(height)] for x in range(width)]
 
 
-def encode(stream, density):
+def encode(stream, density, end_feed=12):
     frames = Frames()
     collected = [[fit_row(row) for row in upright(w, h, rows)] for w, h, rows in pages(stream)]
     out = b''
     for index, rows in enumerate(collected):
-        out += encode_page(frames, rows, density, index == 0, index == len(collected) - 1)
+        out += encode_page(frames, rows, density, index == 0, index == len(collected) - 1, end_feed)
     return out
 
 
@@ -156,12 +170,13 @@ def main(argv):
         sys.stderr.write('Usage: rastertoorgbrox1 job user title copies options [file]\n')
         return 1
     density = density_from(argv[5])
+    end_feed = end_feed_from(argv[5])
     try:
         if len(argv) > 6:
             with open(argv[6], 'rb') as stream:
-                data = encode(stream, density)
+                data = encode(stream, density, end_feed)
         else:
-            data = encode(sys.stdin.buffer, density)
+            data = encode(sys.stdin.buffer, density, end_feed)
     except (ValueError, EOFError) as error:
         sys.stderr.write('ERROR: %s\n' % error)
         return 1

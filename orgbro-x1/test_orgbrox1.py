@@ -83,6 +83,12 @@ class FilterTest(unittest.TestCase):
         # the second line from the top becomes dot 94 of every row, moved one dot along to the last one
         self.assertTrue(all(rows[i * 12 + 11] == 0x01 for i in range(296)))
 
+    def test_shorter_end_feed(self):
+        feeds = [d for command, _seq, d in frames(FILTER.encode(io.BytesIO(raster(96, 48)), 9, 6)) if command == 0x02]
+        self.assertEqual(feeds, [bytes([48, 0])])
+        self.assertEqual(FILTER.end_feed_from('X1EndFeed=8'), 8)
+        self.assertEqual(FILTER.end_feed_from('X1EndFeed=7'), 12)
+
     def test_density_option(self):
         self.assertEqual(FILTER.density_from('PageSize=w34h85 X1Density=13'), 13)
         self.assertEqual(FILTER.density_from('X1Density=7'), 9)
