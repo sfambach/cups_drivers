@@ -60,4 +60,8 @@ uses:
 | material62 (62x30) | BrL053E01E3D0F6 | orientation-requested=4 |
 | 62x62 | BrL053E03E8E83B | – |
 
+**Trim tape:** the driver's option `BrTrimtape` is ON by default and cuts blank tape off the end of a label, so a
+62×62 label whose lower part is empty comes out shorter (62×42). Send `-o BrTrimtape=OFF` with every job (Taxmod: the
+printer's options in the model).
+
 A Brother driver update may rewrite the PPD; run `setup.sh` again afterwards.
