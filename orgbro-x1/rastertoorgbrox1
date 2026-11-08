@@ -162,12 +162,10 @@ def shift_from(options):
 
 
 def shifted(rows, shift):
-    """Blank rows in front, as many cut at the end, so the label keeps its length."""
+    """Blank rows in front; nothing is cut, since the X1 would otherwise leave the end of the label empty."""
     if shift <= 0 or not rows:
         return rows
-    blank = bytes(ROW_BYTES)
-    dots = min(shift * 8, len(rows))
-    return [blank] * dots + rows[:len(rows) - dots]
+    return [bytes(ROW_BYTES)] * (shift * 8) + rows
 
 
 def upright(width, height, rows):

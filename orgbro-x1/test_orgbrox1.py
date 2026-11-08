@@ -86,7 +86,7 @@ class FilterTest(unittest.TestCase):
     def test_shift_moves_the_picture_later(self):
         rows = [bytes([0xFF] * FILTER.ROW_BYTES)] * 40
         moved = FILTER.shifted(rows, 2)
-        self.assertEqual(len(moved), 40)
+        self.assertEqual(len(moved), 56)
         self.assertEqual(moved[:16], [bytes(FILTER.ROW_BYTES)] * 16)
         self.assertEqual(moved[16], rows[0])
         self.assertEqual(FILTER.shift_from('X1Shift=3'), 3)
