@@ -149,7 +149,7 @@ def density_from(options):
     return 9
 
 
-SHIFTS = (0, 1, 2, 3, 4)
+SHIFTS = tuple(range(0, 9))
 
 
 def shift_from(options):

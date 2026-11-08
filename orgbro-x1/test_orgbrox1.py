@@ -91,6 +91,7 @@ class FilterTest(unittest.TestCase):
         self.assertEqual(moved[16], rows[0])
         self.assertEqual(FILTER.shift_from('X1Shift=3'), 3)
         self.assertEqual(FILTER.shift_from('X1Shift=9'), 0)
+        self.assertEqual(FILTER.shift_from('X1Shift=5'), 5)
         self.assertEqual(FILTER.shifted(rows, 0), rows)
 
     def test_shorter_end_feed(self):
