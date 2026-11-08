@@ -137,3 +137,13 @@
 *X1EndFeed 10/10 mm: ""
 *X1EndFeed 12/12 mm (as the app): ""
 *CloseUI: *X1EndFeed
+
+*OpenUI *X1Shift/Start the picture later: PickOne
+*OrderDependency: 20 AnySetup *X1Shift
+*DefaultX1Shift: 0
+*X1Shift 0/0 mm: ""
+*X1Shift 1/1 mm: ""
+*X1Shift 2/2 mm: ""
+*X1Shift 3/3 mm: ""
+*X1Shift 4/4 mm: ""
+*CloseUI: *X1Shift

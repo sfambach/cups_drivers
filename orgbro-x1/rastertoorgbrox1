@@ -149,6 +149,27 @@ def density_from(options):
     return 9
 
 
+SHIFTS = (0, 1, 2, 3, 4)
+
+
+def shift_from(options):
+    """Millimetres the picture starts later on the label: the X1 starts printing a little before the label edge."""
+    for option in options.split():
+        key, _, value = option.partition('=')
+        if key == 'X1Shift' and value.isdigit() and int(value) in SHIFTS:
+            return int(value)
+    return 0
+
+
+def shifted(rows, shift):
+    """Blank rows in front, as many cut at the end, so the label keeps its length."""
+    if shift <= 0 or not rows:
+        return rows
+    blank = bytes(ROW_BYTES)
+    dots = min(shift * 8, len(rows))
+    return [blank] * dots + rows[:len(rows) - dots]
+
+
 def upright(width, height, rows):
     """A page wider than the head and no taller than it is a label lying along the tape: turn it a quarter, clockwise."""
     if width <= DOTS or height > DOTS:
@@ -156,9 +177,9 @@ def upright(width, height, rows):
     return [[rows[height - 1 - y][x] for y in range(height)] for x in range(width)]
 
 
-def encode(stream, density, end_feed=12):
+def encode(stream, density, end_feed=12, shift=0):
     frames = Frames()
-    collected = [[fit_row(row) for row in upright(w, h, rows)] for w, h, rows in pages(stream)]
+    collected = [shifted([fit_row(row) for row in upright(w, h, rows)], shift) for w, h, rows in pages(stream)]
     out = b''
     for index, rows in enumerate(collected):
         out += encode_page(frames, rows, density, index == 0, index == len(collected) - 1, end_feed)
@@ -171,12 +192,13 @@ def main(argv):
         return 1
     density = density_from(argv[5])
     end_feed = end_feed_from(argv[5])
+    shift = shift_from(argv[5])
     try:
         if len(argv) > 6:
             with open(argv[6], 'rb') as stream:
-                data = encode(stream, density, end_feed)
+                data = encode(stream, density, end_feed, shift)
         else:
-            data = encode(sys.stdin.buffer, density, end_feed)
+            data = encode(sys.stdin.buffer, density, end_feed, shift)
     except (ValueError, EOFError) as error:
         sys.stderr.write('ERROR: %s\n' % error)
         return 1

@@ -83,6 +83,16 @@ class FilterTest(unittest.TestCase):
         # the second line from the top becomes dot 94 of every row, moved one dot along to the last one
         self.assertTrue(all(rows[i * 12 + 11] == 0x01 for i in range(296)))
 
+    def test_shift_moves_the_picture_later(self):
+        rows = [bytes([0xFF] * FILTER.ROW_BYTES)] * 40
+        moved = FILTER.shifted(rows, 2)
+        self.assertEqual(len(moved), 40)
+        self.assertEqual(moved[:16], [bytes(FILTER.ROW_BYTES)] * 16)
+        self.assertEqual(moved[16], rows[0])
+        self.assertEqual(FILTER.shift_from('X1Shift=3'), 3)
+        self.assertEqual(FILTER.shift_from('X1Shift=9'), 0)
+        self.assertEqual(FILTER.shifted(rows, 0), rows)
+
     def test_shorter_end_feed(self):
         feeds = [d for command, _seq, d in frames(FILTER.encode(io.BytesIO(raster(96, 48)), 9, 6)) if command == 0x02]
         self.assertEqual(feeds, [bytes([48, 0])])

@@ -32,6 +32,8 @@ Read from the vendor's app XeasyLabel, whose SDK calls the X1 «HP2». Every fra
 | `00` | 24 × 12 bytes | 24 rows of 96 dots, MSB first, 1 = black; the app moves the picture one dot along |
 | `02` | `48 00` / `18 00` | feed 72 dots after each label, 24 more after the last (the app); option `X1EndFeed=4…12` (mm) feeds less after the last one |
 
+Option `X1Shift=0…4` (mm): the X1 starts printing about 3 mm before the label edge; the filter puts that many millimetres of blank rows in front and cuts as many at the end, so the label keeps its length.
+
 The printer answers with frames of command `FF` (status). The filter's output for a test picture is
 byte for byte what the app sent, and that job printed.
 
