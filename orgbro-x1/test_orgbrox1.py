@@ -94,6 +94,12 @@ class FilterTest(unittest.TestCase):
         self.assertEqual(FILTER.shift_from('X1Shift=5'), 5)
         self.assertEqual(FILTER.shifted(rows, 0), rows)
 
+    def test_shift_shortens_the_feed(self):
+        frames = FILTER.Frames()
+        rows = [bytes(FILTER.ROW_BYTES)] * 24
+        out = FILTER.encode_page(frames, rows, 9, True, True, 12, 4)
+        self.assertIn(struct.pack('<H', 64), out[-12:])
+
     def test_shorter_end_feed(self):
         feeds = [d for command, _seq, d in frames(FILTER.encode(io.BytesIO(raster(96, 48)), 9, 6)) if command == 0x02]
         self.assertEqual(feeds, [bytes([48, 0])])
