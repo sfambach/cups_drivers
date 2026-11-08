@@ -16,7 +16,7 @@ It
 
 1. creates the queue with Brother's PPD (`lpadmin`, default size 62x100),
 2. adds our own label sizes with Brother's paper tool `brpapertoollpr_ql810w`:
-   62x30, 62x50, 62x62, 62x120 (width × height in mm, on the 62 mm roll),
+   62x20, 62x30, 62x50, 62x62, 62x120 (width × height in mm, on the 62 mm roll),
 3. shortens the size list to what fits the 62 mm roll: **62x100**, **62X1** (62 mm continuous) and
    the own sizes. The full PPD is kept as `/etc/cups/ppd/<queue>.ppd.orig`,
 4. restarts CUPS and prints the CUPS names of the own sizes.

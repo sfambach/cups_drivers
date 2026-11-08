@@ -18,7 +18,7 @@ PAPERTOOL="$BROTHER/lpd/$ARCH/brpapertoollpr_ql810w"
 PPD="/etc/cups/ppd/$QUEUE.ppd"
 
 # Own sizes (width x height in mm) added with Brother's paper tool.
-CUSTOM="62x30 62x50 62x62 62x120"
+CUSTOM="62x20 62x30 62x50 62x62 62x120"
 # Brother's built-in sizes we keep; all others are removed from the queue's PPD.
 KEEP_BUILTIN="62x100 62X1"
 
